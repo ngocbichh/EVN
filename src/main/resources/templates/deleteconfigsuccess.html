@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">HỆ THỐNG TÍNH TIỀN
+					ĐIỆN</a>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="index.html"> <span
+						class="glyphicon glyphicon-home"></span> Trang chủ
+				</a></li>
+				<li class="dropdown"><a class="dropdown-toggle"
+					data-toggle="dropdown" href="#"> <span
+						class="glyphicon glyphicon-th-list"></span> Chức năng<span
+						class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a th:href="@{/user/sendmail/}+${user.idUser}">Gửi Email</a></li>
+                        <li><a th:href="@{/user/follow/}+${user.idUser}">Theo dõi danh sách</a></li>
+                        <li><a th:href="@{/user/report/}+${user.idUser}">Xuất báo cáo</a></li>
+                        <li><a th:href="@{/user/config/}+${user.idUser}">Cấu hình</a></li>
+					</ul></li>
+				<li><a href="#"><span class="glyphicon glyphicon-user"></span>
+						<span id="username"></span></a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
+		<h2>Cấu hình</h2>
+		<p>Công thức tính tiền điện cho hộ dân</p>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nhóm đối tượng</th>
+						<th>Giá bán điện (đồng/kWh)</th>
+						<th colspan="2"></th>
+					</tr>
+				</thead>
+				<tbody id="list_configs">
+					<tr th:each="config : ${configs}">
+						<td th:text="${config.idConfiguration}"></td>
+						<td th:text="${config.subject}"></td>
+						<td th:text="${config.price}"></td>
+						<td><a th:href="@{/user/editConfig/view/}+${config.idConfiguration}"
+							class="btn btn-primary btn-sm">Sửa</a></td>
+						<td><a th:href="@{/user/deleteConfig/view/}+${config.idConfiguration}"
+							class="btn btn-primary btn-sm">Xóa</a></td>
+					</tr>
+				</tbody>
+			</table>
+			<ul class="pagination ">
+				<li><a href="# ">&laquo;</a></li>
+				<li class="active "><a href="# ">1</a></li>
+				<li><a href="# ">&raquo;</a></li>
+			</ul>
+			<br>
+			<form method="get" th:action="@{/user/addConfig/view}">
+			<input type="submit" value="Thêm cấu hình" class="btn btn-primary btn-sm">
+			</form>
+	</div>
+</body>
+</html>

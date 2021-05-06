@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="index.html">HỆ THỐNG TÍNH TIỀN ĐIỆN</a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="index.html">
+                            <span class="glyphicon glyphicon-home"></span> Trang chủ</a>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <span class="glyphicon glyphicon-th-list"></span> Chức năng<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/user/sendmail/}+${user.idUser}">Gửi Email</a></li>
+	                        <li><a th:href="@{/user/follow/}+${user.idUser}">Theo dõi danh sách</a></li>
+	                        <li><a th:href="@{/user/report/}+${user.idUser}">Xuất báo cáo</a></li>
+	                        <li><a th:href="@{/user/config/}+${user.idUser}">Cấu hình</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> <span th:text="${user.fullName}"></span></a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <h2>Xuất báo cáo</h2>
+            <form th:action="@{/user/report/view}" th:method="post">
+                <input type="text" name="idUser" th:value="${user.idUser}" style="display: none;">
+                <div class="form-group">
+                    <label for="sel1">Loại báo cáo</label>
+                    <select class="form-control" id="type" name="status">
+                        <option value="">-- Chọn loại báo cáo --</option>
+                        <option value="1">Tình hình thanh toán tiền điện của các quận</option>
+                        <option value="2">Các hộ dân chưa thanh toán</option>
+                        <option value="3">Các hộ dân đã thanh toán</option>
+                    </select>
+                    <br>
+                    <label for="years">Năm</label>
+                    <select class="form-control" id="years" onchange="getcombo();" name="year">
+                        <option hidden value="">-- Chọn năm --</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                    </select>
+                    <br>
+                    <label for="sel1">Tháng/quý</label>
+                    <select class="form-control" id="months" name="time">
+                        <option value="" hidden>-- Chọn tháng/quý --</option>
+                   </select>
+
+                    <script>
+                        getcombo();
+
+                        function getcombo() {
+                            var year = document.getElementById("years").value;
+                            var month = document.getElementById("months");
+                            if (year == '2021') {
+                                month.innerHTML =
+                                    '<select class="form-control" id="months">' +
+                                    '<optgroup label="Tháng">' +
+                                    '<option value="1">Tháng 01</option>' +
+                                    '<option value="2">Tháng 02</option>' +
+                                    '<option value="3">Tháng 03</option>' +
+                                    '<option value="4">Tháng 04</option>' +
+                                    '<optgroup label="Quí">' +
+                                    '<option value="13">Quí I</option>' +
+                                    '</select>';
+                            } else if (year == '2020') {
+                                month.innerHTML =
+                                    '<select class="form-control" id="months">' +
+                                    '<optgroup label="Tháng">' +
+                                    '<option value="1">Tháng 01</option>' +
+                                    '<option value="2">Tháng 02</option>' +
+                                    '<option value="3">Tháng 03</option>' +
+                                    '<option value="4">Tháng 04</option>' +
+                                    '<option value="5">Tháng 05</option>' +
+                                    '<option value="6">Tháng 06</option>' +
+                                    '<option value="7">Tháng 07</option>' +
+                                    '<option value="8">Tháng 08</option>' +
+                                    '<option value="9">Tháng 09</option>' +
+                                    '<option value="10">Tháng 10</option>' +
+                                    '<option value="11">Tháng 11</option>' +
+                                    '<option value="12">Tháng 12</option>' +
+                                    '<optgroup label="Quí">' +
+                                    '<option value="13">Quí I</option>' +
+                                    '<option value="14">Quí II</option>' +
+                                    '<option value="15">Quí III</option>' +
+                                    '<option value="16">Quí IV</option>'
+                                '</select>';
+                            } else if (year == '2019') {
+                                month.innerHTML =
+                                    '<select class="form-control" id="months">' +
+                                    '<optgroup label="Tháng">' +
+                                    '<option value="1">Tháng 01</option>' +
+                                    '<option value="2">Tháng 02</option>' +
+                                    '<option value="3">Tháng 03</option>' +
+                                    '<option value="4">Tháng 04</option>' +
+                                    '<option value="5">Tháng 05</option>' +
+                                    '<option value="6">Tháng 06</option>' +
+                                    '<option value="7">Tháng 07</option>' +
+                                    '<option value="8">Tháng 08</option>' +
+                                    '<option value="9">Tháng 09</option>' +
+                                    '<option value="10">Tháng 10</option>' +
+                                    '<option value="11">Tháng 11</option>' +
+                                    '<option value="12">Tháng 12</option>' +
+                                    '<optgroup label="Quí">' +
+                                    '<option value="13">Quí I</option>' +
+                                    '<option value="14">Quí II</option>' +
+                                    '<option value="15">Quí III</option>' +
+                                    '<option value="16">Quí IV</option>'
+                                '</select>';
+                            }
+                        }
+                    </script>
+                    <br>
+                    <label for="district">Quận</label>
+                    <select class="form-control" id="district" name="district">
+                        <option value="" hidden>-- Chọn quận --</option>
+                        <option value="Ba Đình">Ba Đình</option>
+                        <option value="Bắc Từ Liêm">Bắc Từ Liêm</option>
+                        <option value="Cầu Giấy">Cầu Giấy</option>
+                        <option value="Đống Đa">Đống Đa</option>
+                        <option value="Hà Đông">Hà Đông</option>
+                        <option value="Hai Bà Trưng">Hai Bà Trưng</option>
+                        <option value="Hoàn Kiếm">Hoàn Kiếm</option>
+                        <option value="Hoàng Mai">Hoàng Mai</option>
+                        <option value="Long Biên">Long Biên</option>
+                        <option value="Nam từ Liêm">Nam Từ Liêm</option>
+                        <option value="Tây Hồ">Tây Hồ</option>
+                        <option value="Thanh Xuân">Thanh Xuân</option>
+                    </select>
+                    <br/>
+                    <button type="submit" class="btn btn-success">Xem báo cáo</button>
+                </div>
+            </form>
+        </div>
+        <div class="container ">
+            <table class="table table-striped ">
+                <thead>
+                    <tr>
+                        <th>Mã khách hàng</th>
+                        <th>Tên khách hàng</th>
+                        <th>Địa chỉ</th>
+                        <th>Quận</th>
+                        <th>Tháng</th>
+                        <th>Năm</th>
+                        <th>Số tiền (VNĐ)</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody id="list_customers_report ">
+                    <tr th:each="report : ${reports} ">
+                        <td th:text="${report.customer.idCustomer} "></td>
+                        <td th:text="${report.customer.fullName} "></td>
+                        <td th:text="${report.customer.address} "></td>
+                        <td th:text="${report.customer.district} "></td>
+                        <td th:text="${report.month} "></td>
+                        <td th:text="${report.year} "></td>
+                        <td th:text="${report.total} "></td>
+                        <td th:text="${report.status} "></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul class="pagination ">
+                <li><a href="# ">&laquo;</a></li>
+                <li class="active "><a href="# ">1</a></li>
+                <li><a href="# ">&raquo;</a></li>
+            </ul>
+            <br>
+            <button type="button" onclick="window.open('data:application/vnd.ms-excel,'+document.documentElement.innerHTML);" class="btn btn-success center-block ">Xuất báo cáo</button>
+        </div>
+        <!-- <script src="baocao.js "></script> -->
+    </body>
+
+</html>
