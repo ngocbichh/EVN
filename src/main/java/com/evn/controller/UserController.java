@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.evn.services.ConfigurationService;
+import com.evn.services.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.ProjectedPayload;
 import org.springframework.stereotype.Controller;
@@ -33,8 +35,16 @@ public class UserController {
 	private InvoiceRepository invoiceRepo;
 	@Autowired
 	private ConfigurationRepository configRepo;
-	
-//	Đăng nhập
+
+	private ConfigurationService configurationService;
+	private InvoiceService invoiceService;
+
+	public UserController(ConfigurationService configurationService, InvoiceService invoiceService) {
+		this.configurationService = configurationService;
+		this.invoiceService = invoiceService;
+	}
+
+	//	Đăng nhập
 	@PostMapping("/login")
 	public String login(@RequestParam(name = "username") String username,
 			@RequestParam(name = "password") String password, Model model) {
@@ -57,7 +67,7 @@ public class UserController {
 			User user = optuser.get();
 			model.addAttribute("user", user);
 			List<Invoice> invoices = new ArrayList<>();
-			invoices = invoiceRepo.findByStatus("Chưa hoàn thành");
+			invoices = invoiceService.getByStatus("Chưa hoàn thành");
 			System.out.println(invoices);
 			model.addAttribute("mails", invoices);
 			return "mail";
@@ -77,11 +87,11 @@ public class UserController {
 			System.out.println(user);
 			List<Invoice> invoices = new ArrayList<Invoice>();
 			if (time <= 12) {
-				invoices = invoiceRepo.findByStatusAndMonthAndYear("Chưa hoàn thành", time, year);
+				invoices = invoiceService.getByStatusAndMonthAndYear("Chưa hoàn thành", time, year);
 				System.out.println(invoices);
 			} else if (time >12){
 
-				invoices = invoiceRepo.findByStatusAndQuarterAndYear("Chưa hoàn thành", time - 12, year);
+				invoices = invoiceService.getByStatusAndQuarterAndYear("Chưa hoàn thành", time - 12, year);
 				System.out.println(invoices);
 			}
 			List<Invoice> mails = new ArrayList<Invoice>();
@@ -125,28 +135,28 @@ public class UserController {
 			List<Invoice> invoices = new ArrayList<Invoice>();
 			if (time <= 12) {
 				if (status == 2) {
-					invoices = invoiceRepo.findByStatusAndMonthAndYear("Chưa hoàn thành", time, year);
+					invoices = invoiceService.getByStatusAndMonthAndYear("Chưa hoàn thành", time, year);
 					System.out.println(invoices);
 				}
 				if (status == 3) {
-					invoices = invoiceRepo.findByStatusAndMonthAndYear("Đã hoàn thành", time, year);
+					invoices = invoiceService.getByStatusAndMonthAndYear("Đã hoàn thành", time, year);
 					System.out.println(invoices);
 				}
 				if (status == 1) {
-					invoices = invoiceRepo.findByMonthAndYear(time, year);
+					invoices = invoiceService.getByMonthAndYear(time, year);
 					System.out.println(invoices);
 				}
 			} else {
 				if (status == 2) {
-					invoices = invoiceRepo.findByStatusAndQuarterAndYear("Chưa hoàn thành", time - 12, year);
+					invoices = invoiceService.getByStatusAndQuarterAndYear("Chưa hoàn thành", time - 12, year);
 					System.out.println(invoices);
 				}
 				if (status == 3) {
-					invoices = invoiceRepo.findByStatusAndQuarterAndYear("Đã hoàn thành", time - 12, year);
+					invoices = invoiceService.getByStatusAndQuarterAndYear("Đã hoàn thành", time - 12, year);
 					System.out.println(invoices);
 				}
 				if (status == 1) {
-					invoices = invoiceRepo.findByQuarterAndYear(time - 12, year);
+					invoices = invoiceService.getByQuarterAndYear(time - 12, year);
 					System.out.println(invoices);
 				}
 			}
@@ -189,11 +199,11 @@ public class UserController {
 			System.out.println(user);
 			List<Invoice> invoices = new ArrayList<Invoice>();
 			if (time <= 12) {
-				invoices = invoiceRepo.findByStatusAndMonthAndYear("Chưa hoàn thành", time, year);
+				invoices = invoiceService.getByStatusAndMonthAndYear("Chưa hoàn thành", time, year);
 				System.out.println(invoices);
 			} else if (time >12){
 
-				invoices = invoiceRepo.findByStatusAndQuarterAndYear("Chưa hoàn thành", time - 12, year);
+				invoices = invoiceService.getByStatusAndQuarterAndYear("Chưa hoàn thành", time - 12, year);
 				System.out.println(invoices);
 			}
 			List<Invoice> follows = new ArrayList<Invoice>();
@@ -219,7 +229,7 @@ public class UserController {
 			User user = optuser.get();
 			model.addAttribute("user", user);
 			List<Configuration> configs = new ArrayList<>();
-			configs = configRepo.findAll();
+			configs = configurationService.getAll();
 			System.out.println(configs);
 			model.addAttribute("configs", configs);
 			return "cauhinh";
@@ -248,9 +258,9 @@ public class UserController {
 		c.setDateEdit(formatter.parse(dateEdit));
 		c.setPrice(price);
 		c.setSubject(subject);
-		configRepo.save(c);
+		configurationService.save(c);
 		List<Configuration> list = new ArrayList<>();
-		list = configRepo.findAll();
+		list = configurationService.getAll();
 		System.out.println(list);
 		model.addAttribute("configs",list);
 		return "deleteconfigsuccess";
@@ -259,7 +269,7 @@ public class UserController {
 //	Xóa cấu hình
 	@GetMapping("/deleteConfig/view/{idConfiguration}")
 	public String viewToDelConfig(@PathVariable("idConfiguration") String id, Model model) {
-		Optional<Configuration> con = configRepo.findById(id) ;
+		Optional<Configuration> con = configurationService.getById(id) ;
 		if(con.isPresent()) {
 			System.out.println(con);
 			model.addAttribute("config", con);
@@ -269,11 +279,11 @@ public class UserController {
 	}
 	@PostMapping("/deleteConfig/")
 	public String delConfig(@RequestParam("idConfiguration") String id, Model model) {
-		Optional<Configuration> con = configRepo.findById(id) ;
+		Optional<Configuration> con = configurationService.getById(id) ;
 		if(con.isPresent()) {
 			configRepo.deleteById(id);
 			List<Configuration> list = new ArrayList<>();
-			list = configRepo.findAll();
+			list = configurationService.getAll();
 			System.out.println(list);
 			model.addAttribute("configs",list);
 			return "deleteconfigsuccess";
@@ -284,7 +294,7 @@ public class UserController {
 //	Sửa cấu hình
 	@GetMapping("/editConfig/view/{idConfiguration}")
 	public String viewToEditConfig(@PathVariable("idConfiguration") String id, Model model) {
-		Optional<Configuration> con = configRepo.findById(id) ;
+		Optional<Configuration> con = configurationService.getById(id) ;
 		if(con.isPresent()) {
 			System.out.println(con);
 			model.addAttribute("config", con);
@@ -297,10 +307,10 @@ public class UserController {
 							@RequestParam("dateCreate") String dateCreate, @RequestParam("editor") String editor, 
 							@RequestParam("dateEdit") String dateEdit,@RequestParam("price") Float price, 
 							@RequestParam("subject") String subject, Model model) throws ParseException {
-		Optional<Configuration> con = configRepo.findById(id) ;
+		Optional<Configuration> con = configurationService.getById(id) ;
 		 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		if(con.isPresent()) {
-			configRepo.deleteById(id);
+			configurationService.delete(id);
 			Configuration c = new Configuration();
 			c.setIdConfiguration(id);
 			c.setCreator(creator);
@@ -309,9 +319,9 @@ public class UserController {
 			c.setDateEdit(formatter.parse(dateEdit));
 			c.setPrice(price);
 			c.setSubject(subject);
-			configRepo.save(c);
+			configurationService.save(c);
 			List<Configuration> list = new ArrayList<>();
-			list = configRepo.findAll();
+			list = configurationService.getAll();
 			System.out.println(list);
 			model.addAttribute("configs",list);
 			return "deleteconfigsuccess";
