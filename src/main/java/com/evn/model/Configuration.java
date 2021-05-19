@@ -15,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @RequiredArgsConstructor
 public class Configuration {
-	
-		
+
 	@Id
 	private String idConfiguration;
 	private String subject;
